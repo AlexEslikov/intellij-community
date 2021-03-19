@@ -16,15 +16,22 @@ import java.nio.file.Paths
 /**
  * @author Vitaliy.Bibaev
  */
-abstract class LibraryTraceExecutionTestCase(jarName: String) : TraceExecutionTestCase() {
+abstract class LibraryTraceExecutionTestCase(jarNames: List<String>) : TraceExecutionTestCase() {
+  constructor(jarName: String) : this(listOf(jarName))
+
   private val libraryDirectory = File(PluginPathManager.getPluginHomePath("stream-debugger") + "/lib").absolutePath
-  private val jarPath = Paths.get(libraryDirectory, jarName).toAbsolutePath().toString()
+  private val jarPaths = jarNames.map { jarName -> Paths.get(libraryDirectory, jarName).toAbsolutePath().toString() }
+
 
   private companion object {
-    fun String.replaceLibraryPath(libraryPath: String): String {
+    fun String.replaceLibraryPath(libraryPaths: List<String>): String {
       val caseSensitive = SystemInfo.isFileSystemCaseSensitive
-      val result = StringUtil.replace(this, FileUtil.toSystemDependentName(libraryPath), "!LIBRARY_JAR!", !caseSensitive)
-      return StringUtil.replace(result, FileUtil.toSystemIndependentName(libraryPath), "!LIBRARY_JAR!", !caseSensitive)
+      var result = this
+      libraryPaths.forEach { libraryPath ->
+        result = StringUtil.replace(result, FileUtil.toSystemDependentName(libraryPath), "!LIBRARY_JAR!", !caseSensitive)
+        result = StringUtil.replace(result, FileUtil.toSystemIndependentName(libraryPath), "!LIBRARY_JAR!", !caseSensitive)
+      }
+      return result
     }
   }
 
@@ -32,17 +39,17 @@ abstract class LibraryTraceExecutionTestCase(jarName: String) : TraceExecutionTe
     super.setUpModule()
     ApplicationManager.getApplication().runWriteAction {
       VfsRootAccess.allowRootAccess(testRootDisposable, libraryDirectory)
-      PsiTestUtil.addLibrary(myModule, jarPath)
+      jarPaths.forEach { PsiTestUtil.addLibrary(myModule, it) }
     }
   }
 
   override fun replaceAdditionalInOutput(str: String): String {
-    return super.replaceAdditionalInOutput(str).replaceLibraryPath(jarPath)
+    return super.replaceAdditionalInOutput(str).replaceLibraryPath(jarPaths)
   }
 
   override fun createJavaParameters(mainClass: String?): JavaParameters {
     val parameters = super.createJavaParameters(mainClass)
-    parameters.classPath.add(jarPath)
+    jarPaths.forEach { parameters.classPath.add(it) }
     return parameters
   }
 
