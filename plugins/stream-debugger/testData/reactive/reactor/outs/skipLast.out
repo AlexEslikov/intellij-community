@@ -1,0 +1,33 @@
+LineBreakpoint created at SkipLast.java:9
+!JDK_HOME!\bin\java -agentlib:jdwp=transport=dt_socket,address=!HOST_NAME!:!HOST_PORT!,suspend=y,server=n -Dfile.encoding=!FILE_ENCODING! -classpath !OUTPUT_PATH!;!LIBRARY_JAR!;!LIBRARY_JAR!;!RT_JAR! filtering.SkipLast
+Connected to the target VM, address: '!HOST_NAME!:PORT_NAME!', transport: 'socket'
+SkipLast.java:9
+Flux.just(1, 2, 3, 4)
+.skipLast(1)
+.subscribe()
+skipLast
+    before: 1,2,4,6
+    after: 3,5,7
+subscribe
+    before: 3,5,7
+    after: nothing
+mappings for skipLast
+  direct:
+    1 -> nothing
+    2 -> nothing
+    4 -> nothing
+    6 -> nothing
+  reverse:
+    nothing <- 3
+    nothing <- 5
+    nothing <- 7
+mappings for subscribe
+  direct:
+    3 -> nothing
+    5 -> nothing
+    7 -> nothing
+  reverse:
+    empty
+Disconnected from the target VM, address: '!HOST_NAME!:PORT_NAME!', transport: 'socket'
+
+Process finished with exit code 0
