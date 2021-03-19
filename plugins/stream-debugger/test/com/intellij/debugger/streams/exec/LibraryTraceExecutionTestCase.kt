@@ -28,6 +28,7 @@ abstract class LibraryTraceExecutionTestCase(jarNames: List<String>) : TraceExec
       val caseSensitive = SystemInfo.isFileSystemCaseSensitive
       var result = this
       libraryPaths.forEach { libraryPath ->
+        result = StringUtil.replace(result, File(libraryPath).toURI().toString().removePrefix("file:"), "!LIBRARY_JAR!", !caseSensitive)
         result = StringUtil.replace(result, FileUtil.toSystemDependentName(libraryPath), "!LIBRARY_JAR!", !caseSensitive)
         result = StringUtil.replace(result, FileUtil.toSystemIndependentName(libraryPath), "!LIBRARY_JAR!", !caseSensitive)
       }
