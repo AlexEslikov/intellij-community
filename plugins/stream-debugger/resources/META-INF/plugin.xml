@@ -40,6 +40,7 @@
     <librarySupport implementation="com.intellij.debugger.streams.lib.impl.StandardLibrarySupportProvider"/>
     <librarySupport implementation="com.intellij.debugger.streams.lib.impl.StreamExLibrarySupportProvider"/>
     <librarySupport implementation="com.intellij.debugger.streams.lib.impl.JBIterableSupportProvider"/>
+    <librarySupport implementation="com.intellij.debugger.streams.lib.impl.reactive.RxJavaSupportProvider"/>
   </extensions>
 
   <actions>
