@@ -44,6 +44,11 @@
     <librarySupport implementation="com.intellij.debugger.streams.lib.impl.reactive.ReactorSupportProvider"/>
   </extensions>
 
+  <extensions defaultExtensionNs="com.intellij">
+    <postStartupActivity
+      implementation="com.intellij.debugger.streams.lib.impl.reactive.ReactiveDebuggerStartupActivity"/>
+  </extensions>
+
   <actions>
     <action id="StreamTracerAction"
             class="com.intellij.debugger.streams.action.TraceStreamAction"
