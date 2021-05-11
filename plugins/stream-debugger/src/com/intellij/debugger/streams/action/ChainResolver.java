@@ -22,7 +22,7 @@ import java.util.concurrent.ExecutorService;
 /**
  * Helps {@link TraceStreamAction} understand if there is a suitable chain under the debugger position or not.
  */
-class ChainResolver {
+public class ChainResolver {
   private static final Logger LOG = Logger.getInstance(ChainResolver.class);
 
   private ChainsSearchResult mySearchResult = new ChainsSearchResult(0, -1, null);
@@ -93,9 +93,9 @@ class ChainResolver {
     NOT_FOUND
   }
 
-  static final class StreamChainWithLibrary {
-    final StreamChain chain;
-    final LibrarySupportProvider provider;
+  public static final class StreamChainWithLibrary {
+    public final StreamChain chain;
+    public final LibrarySupportProvider provider;
 
     StreamChainWithLibrary(@NotNull StreamChain chain, @NotNull LibrarySupportProvider provider) {
       this.chain = chain;
