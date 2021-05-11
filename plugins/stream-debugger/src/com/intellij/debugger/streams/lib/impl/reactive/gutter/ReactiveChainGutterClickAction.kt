@@ -3,6 +3,7 @@ package com.intellij.debugger.streams.lib.impl.reactive.gutter
 
 import com.intellij.debugger.engine.JavaValue
 import com.intellij.debugger.streams.action.ChainResolver
+import com.intellij.debugger.streams.ui.reactive.ReactiveStreamChainUpdateListener
 import com.intellij.debugger.streams.wrapper.StreamChain
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
@@ -11,6 +12,7 @@ import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.editor.Document
 import com.intellij.openapi.editor.EditorFactory
 import com.intellij.openapi.fileEditor.FileDocumentManager
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiElement
@@ -38,6 +40,7 @@ internal class ReactiveChainGutterClickAction(private val reactiveStreamGutterRe
 
   override fun actionPerformed(e: AnActionEvent) {
     val psiElement = reactiveStreamGutterRenderer.psiElement
+    val project = e.project ?: return
 
     val session = reactiveStreamGutterRenderer.getCurrentDebugSession(psiElement)
     val stackFrame = session?.currentStackFrame
@@ -56,10 +59,13 @@ internal class ReactiveChainGutterClickAction(private val reactiveStreamGutterRe
     val chain = chains[0].chain
     if (chain.producerCall == null) return
     val expression = buildExpression(psiElement.containingFile, document, chain)
-    evaluateExpression(evaluator, expression, stackFrame)
+    evaluateExpression(evaluator, expression, stackFrame, project)
   }
 
-  private fun evaluateExpression(evaluator: XDebuggerEvaluator, expression: XExpression, stackFrame: XStackFrame) {
+  private fun evaluateExpression(evaluator: XDebuggerEvaluator,
+                                 expression: XExpression,
+                                 stackFrame: XStackFrame,
+                                 project: Project) {
     ReadAction.nonBlocking {
       evaluator.evaluate(expression, object : XEvaluationCallbackBase() {
         override fun errorOccurred(errorMessage: String) {
@@ -70,14 +76,32 @@ internal class ReactiveChainGutterClickAction(private val reactiveStreamGutterRe
           if (evaluationResult is JavaValue) {
             val value = evaluationResult.descriptor.value
             if (value is BooleanValue) {
-              val result = value.value()
-              reactiveStreamGutterRenderer.streamLoggingEnabled = result
+              val streamLoggingEnabled = value.value()
+              reactiveStreamGutterRenderer.streamLoggingEnabled = streamLoggingEnabled
+              publishResult(streamLoggingEnabled, project)
               stackFrame.sourcePosition?.file?.let { repaintEditor(it) }
             }
           }
         }
       }, stackFrame.sourcePosition)
     }.submit(AppExecutorUtil.getAppExecutorService())
+  }
+
+  private fun publishResult(streamLoggingEnabled: Boolean, project: Project) {
+    val psiElement = reactiveStreamGutterRenderer.psiElement
+    val fileName = psiElement.containingFile.name
+    val lineNumber = getDocument(psiElement)?.getLineNumberOneBased(psiElement.startOffset)
+
+    if (streamLoggingEnabled) {
+      project.messageBus
+        .syncPublisher(ReactiveStreamChainUpdateListener.ReactiveStreamChainsUpdate)
+        .createRow("$fileName:$lineNumber", psiElement)
+    }
+    else {
+      project.messageBus
+        .syncPublisher(ReactiveStreamChainUpdateListener.ReactiveStreamChainsUpdate)
+        .deleteRow("$fileName:$lineNumber")
+    }
   }
 
   private fun repaintEditor(file: VirtualFile) {
