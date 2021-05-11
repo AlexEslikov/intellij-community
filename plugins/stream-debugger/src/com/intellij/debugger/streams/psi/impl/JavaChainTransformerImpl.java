@@ -27,7 +27,8 @@ public class JavaChainTransformerImpl implements ChainTransformer.Java {
   @NotNull
   @Override
   public StreamChain transform(@NotNull List<PsiMethodCallExpression> streamExpressions,
-                               @NotNull PsiElement context) {
+                               @NotNull PsiElement context,
+                               @NotNull ChainDetector detector) {
     final PsiMethodCallExpression firstCall = streamExpressions.get(0);
 
     final PsiExpression qualifierExpression = firstCall.getMethodExpression().getQualifierExpression();

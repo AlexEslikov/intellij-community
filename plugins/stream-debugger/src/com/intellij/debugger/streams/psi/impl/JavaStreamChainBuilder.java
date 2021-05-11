@@ -85,7 +85,7 @@ public class JavaStreamChainBuilder implements StreamChainBuilder {
 
   @NotNull
   private List<StreamChain> buildChains(@NotNull List<List<PsiMethodCallExpression>> chains, @NotNull PsiElement context) {
-    return ContainerUtil.map(chains, x -> myChainTransformer.transform(x, context));
+    return ContainerUtil.map(chains, x -> myChainTransformer.transform(x, context, myDetector));
   }
 
   private class MyStreamChainExistenceChecker extends MyVisitorBase {
