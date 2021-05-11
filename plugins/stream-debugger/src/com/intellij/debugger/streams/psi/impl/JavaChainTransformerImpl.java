@@ -5,10 +5,7 @@ import com.intellij.debugger.streams.psi.ChainDetector;
 import com.intellij.debugger.streams.psi.ChainTransformer;
 import com.intellij.debugger.streams.trace.dsl.impl.java.JavaTypes;
 import com.intellij.debugger.streams.trace.impl.handler.type.GenericType;
-import com.intellij.debugger.streams.wrapper.CallArgument;
-import com.intellij.debugger.streams.wrapper.IntermediateStreamCall;
-import com.intellij.debugger.streams.wrapper.StreamChain;
-import com.intellij.debugger.streams.wrapper.TerminatorStreamCall;
+import com.intellij.debugger.streams.wrapper.*;
 import com.intellij.debugger.streams.wrapper.impl.*;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.*;
@@ -32,7 +29,12 @@ public class JavaChainTransformerImpl implements ChainTransformer.Java {
                                @NotNull ChainDetector detector) {
     final PsiMethodCallExpression firstCall = streamExpressions.get(0);
 
-    final PsiExpression qualifierExpression = firstCall.getMethodExpression().getQualifierExpression();
+    final boolean hasProducerCall = detector.isProducerStreamCall(firstCall);
+    final int firstIntermediateCallIndex = hasProducerCall ? 1 : 0;
+    final PsiMethodCallExpression producerCallExpression = hasProducerCall ? firstCall : null;
+    final PsiMethodCallExpression firstIntermediateCall = hasProducerCall ? streamExpressions.get(1) : firstCall;
+
+    final PsiExpression qualifierExpression = firstIntermediateCall.getMethodExpression().getQualifierExpression();
     final PsiType qualifierType = qualifierExpression == null ? null : qualifierExpression.getType();
     final GenericType typeAfterQualifier = qualifierType == null
                                            ? getGenericTypeOfThis(qualifierExpression)
@@ -41,14 +43,17 @@ public class JavaChainTransformerImpl implements ChainTransformer.Java {
       qualifierExpression == null
       ? new QualifierExpressionImpl("", TextRange.EMPTY_RANGE, typeAfterQualifier)
       : new QualifierExpressionImpl(qualifierExpression.getText(), qualifierExpression.getTextRange(), typeAfterQualifier);
+
     final List<IntermediateStreamCall> intermediateCalls =
-      createIntermediateCalls(typeAfterQualifier, streamExpressions.subList(0, streamExpressions.size() - 1));
+      createIntermediateCalls(typeAfterQualifier, streamExpressions.subList(firstIntermediateCallIndex, streamExpressions.size() - 1));
 
     final GenericType typeBefore =
       intermediateCalls.isEmpty() ? qualifier.getTypeAfter() : intermediateCalls.get(intermediateCalls.size() - 1).getTypeAfter();
     final TerminatorStreamCall terminationCall = createTerminationCall(typeBefore, streamExpressions.get(streamExpressions.size() - 1));
 
-    return new StreamChainImpl(qualifier, null, intermediateCalls, terminationCall, context);
+    final ProducerStreamCall producerCall = hasProducerCall ? getProducerCall(producerCallExpression) : null;
+
+    return new StreamChainImpl(qualifier, producerCall, intermediateCalls, terminationCall, context);
   }
 
   @NotNull
@@ -58,6 +63,17 @@ public class JavaChainTransformerImpl implements ChainTransformer.Java {
     return klass == null ? JavaTypes.INSTANCE.getANY()
                          : JavaTypes.INSTANCE.fromPsiClass(klass);
   }
+
+  private static ProducerStreamCall getProducerCall(PsiMethodCallExpression producerCallExpression) {
+
+    final PsiExpression qualifierExpression = producerCallExpression.getMethodExpression().getQualifierExpression();
+    final PsiType qualifierType = qualifierExpression == null ? null : qualifierExpression.getType();
+    final GenericType typeAfterQualifier = qualifierType == null
+                                           ? getGenericTypeOfThis(qualifierExpression)
+                                           : JavaTypes.INSTANCE.fromStreamPsiType(qualifierType);
+    return createProducerCall(typeAfterQualifier, producerCallExpression);
+  }
+
 
   @NotNull
   private static List<IntermediateStreamCall> createIntermediateCalls(@NotNull GenericType producerAfterType,
@@ -116,5 +132,14 @@ public class JavaChainTransformerImpl implements ChainTransformer.Java {
   @NotNull
   private static GenericType resolveTerminationCallType(@NotNull PsiMethodCallExpression call) {
     return JavaTypes.INSTANCE.fromPsiType(extractType(call));
+  }
+
+  @NotNull
+  private static ProducerStreamCall createProducerCall(@NotNull GenericType typeAfter, @NotNull PsiMethodCallExpression expression) {
+    final String name = resolveMethodName(expression);
+    final PsiElement element = expression.getMethodExpression().getLastChild();
+    final List<CallArgument> args = resolveArguments(expression);
+    final GenericType resultType = resolveTerminationCallType(expression);
+    return new ProducerStreamCallImpl(name, element, args, typeAfter, resultType, expression.getTextRange());
   }
 }

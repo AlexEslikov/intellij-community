@@ -12,4 +12,5 @@ interface ChainDetector {
   fun isProducerStreamCall(callExpression: PsiMethodCallExpression): Boolean
   fun isStreamCall(callExpression: PsiMethodCallExpression): Boolean =
     isIntermediateCall(callExpression) || isTerminationCall(callExpression)
+    || isProducerStreamCall(callExpression)
 }

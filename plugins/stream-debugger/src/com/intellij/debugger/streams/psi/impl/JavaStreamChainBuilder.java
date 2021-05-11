@@ -107,6 +107,7 @@ public class JavaStreamChainBuilder implements StreamChainBuilder {
 
   private class MyChainCollectorVisitor extends MyVisitorBase {
     private final Set<PsiMethodCallExpression> myTerminationCalls = new HashSet<>();
+    private final Set<PsiMethodCallExpression> myProducerCalls = new HashSet<>();
     private final Map<PsiMethodCallExpression, PsiMethodCallExpression> myPreviousCalls = new HashMap<>();
 
     @Override
@@ -120,6 +121,9 @@ public class JavaStreamChainBuilder implements StreamChainBuilder {
     private void updateCallTree(@NotNull PsiMethodCallExpression expression) {
       if (myDetector.isTerminationCall(expression)) {
         myTerminationCalls.add(expression);
+      }
+      if (myDetector.isProducerStreamCall(expression)) {
+        myProducerCalls.add(expression);
       }
 
       final PsiElement parent = expression.getParent();
@@ -139,7 +143,11 @@ public class JavaStreamChainBuilder implements StreamChainBuilder {
         List<PsiMethodCallExpression> chain = new ArrayList<>();
         PsiMethodCallExpression current = terminationCall;
         while (current != null) {
-          if (!myDetector.isIntermediateCall(current) && !myDetector.isTerminationCall(current)) break;
+          if (!myDetector.isIntermediateCall(current)
+              && !myDetector.isTerminationCall(current)
+              && !myDetector.isProducerStreamCall(current)) {
+            break;
+          }
           chain.add(current);
           current = myPreviousCalls.get(current);
         }
