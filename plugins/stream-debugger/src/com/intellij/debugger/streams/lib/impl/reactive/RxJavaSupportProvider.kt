@@ -9,7 +9,6 @@ import com.intellij.debugger.streams.psi.impl.JavaStreamChainBuilder
 import com.intellij.debugger.streams.trace.TraceExpressionBuilder
 import com.intellij.debugger.streams.trace.dsl.impl.DslImpl
 import com.intellij.debugger.streams.trace.dsl.impl.java.ReactiveStatementFactory
-import com.intellij.debugger.streams.trace.impl.JavaTraceExpressionBuilder
 import com.intellij.debugger.streams.wrapper.StreamChainBuilder
 import com.intellij.openapi.project.Project
 
@@ -31,7 +30,7 @@ internal class RxJavaSupportProvider : LibrarySupportProvider {
   }
 
   override fun getExpressionBuilder(project: Project): TraceExpressionBuilder {
-    return JavaTraceExpressionBuilder(project, librarySupport.createHandlerFactory(dsl), dsl)
+    return ReactiveTraceExpressionBuilder()
   }
 
   override fun getLibrarySupport(): LibrarySupport = librarySupport
