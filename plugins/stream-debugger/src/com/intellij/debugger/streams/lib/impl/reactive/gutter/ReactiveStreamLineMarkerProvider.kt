@@ -25,7 +25,7 @@ class ReactiveStreamLineMarkerProvider : LineMarkerProviderDescriptor() {
     for (element in elements) {
       ProgressManager.checkCanceled()
       if (element is PsiIdentifier) {
-        val chains = chainResolver.getChains(element)
+        val chains = chainResolver.getChainsWithLibrary(element, false)
         if (chains.isEmpty()) {
           continue
         }

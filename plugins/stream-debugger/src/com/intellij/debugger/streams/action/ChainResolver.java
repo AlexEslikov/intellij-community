@@ -64,12 +64,17 @@ public class ChainResolver {
       LOG.error("Cannot build chains: " + mySearchResult.chainsStatus);
       return Collections.emptyList();
     }
+    return getChainsWithLibrary(elementAtDebugger, true);
+  }
 
+  public @NotNull List<StreamChainWithLibrary> getChainsWithLibrary(@NotNull PsiElement elementAtDebugger, boolean supportRepeatableTrace) {
     // TODO: move to background
     List<StreamChainWithLibrary> chains = new ArrayList<>();
     String elementLanguageId = elementAtDebugger.getLanguage().getID();
     LibrarySupportProvider.EP_NAME.forEachExtensionSafe(provider -> {
-      if (provider.getLanguageId().equals(elementLanguageId)) {
+      if (provider.getLanguageId().equals(elementLanguageId)
+          && provider.supportRepeatableTrace() == supportRepeatableTrace
+      ) {
         StreamChainBuilder chainBuilder = provider.getChainBuilder();
         if (chainBuilder.isChainExists(elementAtDebugger)) {
           for (StreamChain x : chainBuilder.build(elementAtDebugger)) {

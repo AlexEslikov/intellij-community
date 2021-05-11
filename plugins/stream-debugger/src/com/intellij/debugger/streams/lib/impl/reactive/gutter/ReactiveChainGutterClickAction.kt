@@ -49,7 +49,7 @@ internal class ReactiveChainGutterClickAction(private val reactiveStreamGutterRe
     }
 
     val document = getDocument(psiElement) ?: return
-    val chains = chainResolver.getChains(psiElement)
+    val chains = chainResolver.getChainsWithLibrary(psiElement, false)
     if (chains.isEmpty() || chains.size != 1) {
       return
     }
