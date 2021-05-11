@@ -49,6 +49,8 @@
       implementation="com.intellij.debugger.streams.lib.impl.reactive.ReactiveDebuggerStartupActivity"/>
     <codeInsight.lineMarkerProvider language="JAVA"
                                     implementationClass="com.intellij.debugger.streams.lib.impl.reactive.gutter.ReactiveStreamLineMarkerProvider"/>
+    <toolWindow id="Reactive streams" secondary="true" icon="AllIcons.General.Modified" anchor="right"
+                factoryClass="com.intellij.debugger.streams.ui.reactive.ReactiveDebuggerToolWindowFactory"/>
   </extensions>
 
   <actions>
