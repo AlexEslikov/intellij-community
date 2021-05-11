@@ -14,5 +14,7 @@ public final class JavaDebuggerStreamsIcons {
   private static @NotNull Icon load(@NotNull String path, long cacheKey, int flags) {
     return IconManager.getInstance().loadRasterizedIcon(path, JavaDebuggerStreamsIcons.class.getClassLoader(), cacheKey, flags);
   }
+  /** 16x16 */ public static final @NotNull Icon Reactive_stream = load("icons/reactive_stream.svg", -2173238485778964983L, 0);
+  /** 16x16 */ public static final @NotNull Icon Reactive_stream_disabled = load("icons/reactive_stream_disabled.svg", -9069815878630275920L, 0);
   /** 16x16 */ public static final @NotNull Icon Stream_debugger = load("icons/stream_debugger.svg", 9183090942724622184L, 2);
 }
