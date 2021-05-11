@@ -18,6 +18,9 @@ class PackageChainDetector(private val delegate: ChainDetector, private val pack
   override fun isIntermediateCall(callExpression: PsiMethodCallExpression): Boolean =
     delegate.isIntermediateCall(callExpression) && isPackageSupported(callExpression)
 
+  override fun isProducerStreamCall(callExpression: PsiMethodCallExpression): Boolean =
+    delegate.isProducerStreamCall(callExpression)
+
   override fun isStreamCall(callExpression: PsiMethodCallExpression): Boolean =
     delegate.isStreamCall(callExpression) && isPackageSupported(callExpression)
 

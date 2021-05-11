@@ -1,0 +1,43 @@
+LineBreakpoint created at ConcatMap.java:10
+!JDK_HOME!\bin\java -agentlib:jdwp=transport=dt_socket,address=!HOST_NAME!:!HOST_PORT!,suspend=y,server=n -Dfile.encoding=!FILE_ENCODING! -classpath !OUTPUT_PATH!;!LIBRARY_JAR!;!LIBRARY_JAR!;!RT_JAR! flatMapping.ConcatMap
+Connected to the target VM, address: '!HOST_NAME!:PORT_NAME!', transport: 'socket'
+ConcatMap.java:10
+Flux.just(1, 2, 3, 4)
+.concatMap(x -> Flux.fromIterable(Arrays.asList("a" + x, "b" + x)))
+.subscribe()
+concatMap
+    before: 1,4,7,10
+    after: 2,3,5,6,8,9,11,12
+subscribe
+    before: 2,3,5,6,8,9,11,12
+    after: nothing
+mappings for concatMap
+  direct:
+    1 -> nothing
+    4 -> nothing
+    7 -> nothing
+    10 -> nothing
+  reverse:
+    nothing <- 2
+    nothing <- 3
+    nothing <- 5
+    nothing <- 6
+    nothing <- 8
+    nothing <- 9
+    nothing <- 11
+    nothing <- 12
+mappings for subscribe
+  direct:
+    2 -> nothing
+    3 -> nothing
+    5 -> nothing
+    6 -> nothing
+    8 -> nothing
+    9 -> nothing
+    11 -> nothing
+    12 -> nothing
+  reverse:
+    empty
+Disconnected from the target VM, address: '!HOST_NAME!:PORT_NAME!', transport: 'socket'
+
+Process finished with exit code 0

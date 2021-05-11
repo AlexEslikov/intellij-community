@@ -13,36 +13,32 @@ class StandardLibrarySupport
   : LibrarySupportBase() {
 
   init {
-    addIntermediateOperationsSupport(FilterOperation("filter"),
-                                     FilterOperation("limit"),
-                                     FilterOperation("skip"),
-                                     FilterOperation("peek"),
-                                     FilterOperation("onClose"),
-                                     MappingOperation("map"),
-                                     MappingOperation("mapToInt"),
-                                     MappingOperation("mapToLong"),
-                                     MappingOperation("mapToDouble"),
-                                     MappingOperation("mapToObj"),
-                                     MappingOperation("boxed"),
-                                     FlatMappingOperation("flatMap"),
-                                     FlatMappingOperation("flatMapToInt"),
-                                     FlatMappingOperation("flatMapToLong"),
-                                     FlatMappingOperation("flatMapToDouble"),
-                                     DistinctOperation("distinct", { num, call, dsl -> DistinctTraceHandler(num, call, dsl) }),
-                                     SortedOperation("sorted"),
-                                     ParallelOperation("parallel"))
+    addIntermediateOperationsSupport(*filterOperations(
+      "filter", "limit", "skip", "peek", "onClose"))
+
+    addIntermediateOperationsSupport(*mapOperations(
+      "map", "mapToInt", "mapToLong", "mapToDouble", "mapToObj", "boxed"))
+
+    addIntermediateOperationsSupport(*flatMapOperations(
+      "flatMap", "flatMapToInt", "flatMapToLong", "flatMapToDouble"))
+
+    addIntermediateOperationsSupport(DistinctOperation("distinct") { num, call, dsl -> DistinctTraceHandler(num, call, dsl) })
+    addIntermediateOperationsSupport(SortedOperation("sorted"))
+    addIntermediateOperationsSupport(ParallelOperation("parallel"))
 
     addTerminationOperationsSupport(MatchingOperation("anyMatch",
                                                       AnyMatchTraceInterpreter()),
                                     MatchingOperation("allMatch",
                                                       AllMatchTraceInterpreter()),
                                     MatchingOperation("noneMatch",
-                                                      NoneMatchTraceInterpreter()),
-                                    OptionalResultOperation("min"),
+                                                      NoneMatchTraceInterpreter()))
+
+    addTerminationOperationsSupport(OptionalResultOperation("min"),
                                     OptionalResultOperation("max"),
                                     OptionalResultOperation("findAny"),
-                                    OptionalResultOperation("findFirst"),
-                                    ToCollectionOperation("toArray"),
+                                    OptionalResultOperation("findFirst"))
+
+    addTerminationOperationsSupport(ToCollectionOperation("toArray"),
                                     ToCollectionOperation("collect"))
   }
 }

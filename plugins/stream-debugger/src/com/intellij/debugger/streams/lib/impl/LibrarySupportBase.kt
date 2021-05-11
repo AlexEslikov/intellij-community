@@ -13,7 +13,7 @@ import com.intellij.debugger.streams.wrapper.TerminatorStreamCall
 /**
  * @author Vitaliy.Bibaev
  */
-abstract class LibrarySupportBase(private val compatibleLibrary: LibrarySupport = LibrarySupportBase.EMPTY) : LibrarySupport {
+abstract class LibrarySupportBase(private val compatibleLibrary: LibrarySupport = EMPTY) : LibrarySupport {
   companion object {
     val EMPTY: LibrarySupport = DefaultLibrarySupport()
   }
@@ -61,6 +61,12 @@ abstract class LibrarySupportBase(private val compatibleLibrary: LibrarySupport 
   protected fun addTerminationOperationsSupport(vararg operations: TerminalOperation) {
     operations.forEach { mySupportedTerminalOperations[it.name] = it }
   }
+
+  protected fun filterOperations(vararg names: String): Array<FilterOperation> = names.map { FilterOperation(it) }.toTypedArray()
+  protected fun mapOperations(vararg names: String): Array<MappingOperation> = names.map { MappingOperation(it) }.toTypedArray()
+  protected fun flatMapOperations(vararg names: String): Array<FlatMappingOperation> = names.map { FlatMappingOperation(it) }.toTypedArray()
+  protected fun sortedOperations(vararg names: String): Array<SortedOperation> = names.map { SortedOperation(it) }.toTypedArray()
+  protected fun collapseOperations(vararg names: String): Array<CollapseOperation> = names.map { CollapseOperation(it) }.toTypedArray()
 
   private fun findOperationByName(name: String): Operation? =
     mySupportedIntermediateOperations[name] ?: mySupportedTerminalOperations[name]

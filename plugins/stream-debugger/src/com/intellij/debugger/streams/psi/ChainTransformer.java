@@ -13,7 +13,9 @@ import java.util.List;
  */
 public interface ChainTransformer<T extends PsiElement> {
   @NotNull
-  StreamChain transform(@NotNull List<T> callChain, @NotNull PsiElement context);
+  StreamChain transform(@NotNull List<T> callChain,
+                        @NotNull PsiElement context,
+                        @NotNull ChainDetector detector);
 
   interface Java extends ChainTransformer<PsiMethodCallExpression> {
   }

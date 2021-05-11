@@ -40,6 +40,17 @@
     <librarySupport implementation="com.intellij.debugger.streams.lib.impl.StandardLibrarySupportProvider"/>
     <librarySupport implementation="com.intellij.debugger.streams.lib.impl.StreamExLibrarySupportProvider"/>
     <librarySupport implementation="com.intellij.debugger.streams.lib.impl.JBIterableSupportProvider"/>
+    <librarySupport implementation="com.intellij.debugger.streams.lib.impl.reactive.RxJavaSupportProvider"/>
+    <librarySupport implementation="com.intellij.debugger.streams.lib.impl.reactive.ReactorSupportProvider"/>
+  </extensions>
+
+  <extensions defaultExtensionNs="com.intellij">
+    <postStartupActivity
+      implementation="com.intellij.debugger.streams.lib.impl.reactive.ReactiveDebuggerStartupActivity"/>
+    <codeInsight.lineMarkerProvider language="JAVA"
+                                    implementationClass="com.intellij.debugger.streams.lib.impl.reactive.gutter.ReactiveStreamLineMarkerProvider"/>
+    <toolWindow id="Reactive streams" secondary="true" icon="AllIcons.General.Modified" anchor="right"
+                factoryClass="com.intellij.debugger.streams.ui.reactive.ReactiveDebuggerToolWindowFactory"/>
   </extensions>
 
   <actions>

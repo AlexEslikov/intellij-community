@@ -22,7 +22,7 @@ import java.util.concurrent.ExecutorService;
 /**
  * Helps {@link TraceStreamAction} understand if there is a suitable chain under the debugger position or not.
  */
-class ChainResolver {
+public class ChainResolver {
   private static final Logger LOG = Logger.getInstance(ChainResolver.class);
 
   private ChainsSearchResult mySearchResult = new ChainsSearchResult(0, -1, null);
@@ -64,12 +64,17 @@ class ChainResolver {
       LOG.error("Cannot build chains: " + mySearchResult.chainsStatus);
       return Collections.emptyList();
     }
+    return getChainsWithLibrary(elementAtDebugger, true);
+  }
 
+  public @NotNull List<StreamChainWithLibrary> getChainsWithLibrary(@NotNull PsiElement elementAtDebugger, boolean supportRepeatableTrace) {
     // TODO: move to background
     List<StreamChainWithLibrary> chains = new ArrayList<>();
     String elementLanguageId = elementAtDebugger.getLanguage().getID();
     LibrarySupportProvider.EP_NAME.forEachExtensionSafe(provider -> {
-      if (provider.getLanguageId().equals(elementLanguageId)) {
+      if (provider.getLanguageId().equals(elementLanguageId)
+          && provider.supportRepeatableTrace() == supportRepeatableTrace
+      ) {
         StreamChainBuilder chainBuilder = provider.getChainBuilder();
         if (chainBuilder.isChainExists(elementAtDebugger)) {
           for (StreamChain x : chainBuilder.build(elementAtDebugger)) {
@@ -93,9 +98,9 @@ class ChainResolver {
     NOT_FOUND
   }
 
-  static final class StreamChainWithLibrary {
-    final StreamChain chain;
-    final LibrarySupportProvider provider;
+  public static final class StreamChainWithLibrary {
+    public final StreamChain chain;
+    public final LibrarySupportProvider provider;
 
     StreamChainWithLibrary(@NotNull StreamChain chain, @NotNull LibrarySupportProvider provider) {
       this.chain = chain;

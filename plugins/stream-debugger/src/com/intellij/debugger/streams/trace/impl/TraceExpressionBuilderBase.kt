@@ -82,7 +82,7 @@ abstract class TraceExpressionBuilderBase(protected val dsl: Dsl, private val ha
     newIntermediateCalls.addAll(terminatorHandler.additionalCallsBefore())
     val terminatorCall = terminatorHandler.transformCall(chain.terminationCall)
 
-    return StreamChainImpl(qualifierExpression, newIntermediateCalls, terminatorCall,
+    return StreamChainImpl(qualifierExpression, chain.producerCall, newIntermediateCalls, terminatorCall,
                            chain.context)
   }
 

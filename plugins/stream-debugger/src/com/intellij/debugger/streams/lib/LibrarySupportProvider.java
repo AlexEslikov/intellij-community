@@ -33,4 +33,9 @@ public interface LibrarySupportProvider {
 
   @NotNull
   LibrarySupport getLibrarySupport();
+
+  /**
+   * Determines if the chain can be traced independently and repeatedly without side effects
+   */
+  Boolean supportRepeatableTrace();
 }
