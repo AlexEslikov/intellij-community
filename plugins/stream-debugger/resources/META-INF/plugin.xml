@@ -47,6 +47,8 @@
   <extensions defaultExtensionNs="com.intellij">
     <postStartupActivity
       implementation="com.intellij.debugger.streams.lib.impl.reactive.ReactiveDebuggerStartupActivity"/>
+    <codeInsight.lineMarkerProvider language="JAVA"
+                                    implementationClass="com.intellij.debugger.streams.lib.impl.reactive.gutter.ReactiveStreamLineMarkerProvider"/>
   </extensions>
 
   <actions>
