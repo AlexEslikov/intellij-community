@@ -15,7 +15,7 @@ class RxJavaSupport : LibrarySupportBase() {
 
   init {
     addIntermediateOperationsSupport(*filterOperations(
-      "filter", "ofType", "skipLast", "skip"))
+      "take", "filter", " ofType ", " skipLast ", " skip "))
 
     addIntermediateOperationsSupport(*mapOperations(
       "map", "cast"))

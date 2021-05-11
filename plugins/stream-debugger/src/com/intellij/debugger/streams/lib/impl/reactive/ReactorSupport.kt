@@ -12,7 +12,7 @@ class ReactorSupport : LibrarySupportBase() {
 
   init {
     addIntermediateOperationsSupport(*filterOperations(
-      "filter"))
+      "take", "filter"))
 
     addIntermediateOperationsSupport(*mapOperations(
       "map"))
