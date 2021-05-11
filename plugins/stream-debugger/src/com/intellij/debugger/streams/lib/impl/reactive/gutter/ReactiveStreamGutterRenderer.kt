@@ -3,6 +3,7 @@ package com.intellij.debugger.streams.lib.impl.reactive.gutter
 
 import com.intellij.codeInsight.daemon.LineMarkerInfo
 import com.intellij.codeInsight.daemon.LineMarkerInfo.LineMarkerGutterIconRenderer
+import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.psi.PsiElement
 import com.intellij.util.ui.EmptyIcon
 import com.intellij.xdebugger.XDebugSession
@@ -30,6 +31,10 @@ internal data class ReactiveStreamGutterRenderer(
     else {
       return JavaDebuggerStreamsIcons.Reactive_stream_disabled
     }
+  }
+
+  override fun getClickAction(): AnAction {
+    return ReactiveChainGutterClickAction(this)
   }
 
   fun getCurrentDebugSession(element: PsiElement): XDebugSession? {
