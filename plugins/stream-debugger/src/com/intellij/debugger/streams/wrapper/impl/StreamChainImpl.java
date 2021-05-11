@@ -6,6 +6,7 @@ import com.intellij.openapi.util.NlsSafe;
 import com.intellij.psi.PsiElement;
 import one.util.streamex.StreamEx;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.Iterator;
@@ -16,15 +17,18 @@ import java.util.List;
  */
 public class StreamChainImpl implements StreamChain {
   private final QualifierExpression myQualifierExpression;
+  private final ProducerStreamCall myProducer;
   private final List<? extends IntermediateStreamCall> myIntermediateCalls;
   private final TerminatorStreamCall myTerminator;
   private final PsiElement myContext;
 
   public StreamChainImpl(@NotNull QualifierExpression qualifierExpression,
+                         @Nullable ProducerStreamCall producer,
                          @NotNull List<? extends IntermediateStreamCall> intermediateCalls,
                          @NotNull TerminatorStreamCall terminator,
                          @NotNull PsiElement context) {
     myQualifierExpression = qualifierExpression;
+    myProducer = producer;
     myIntermediateCalls = intermediateCalls;
     myTerminator = terminator;
     myContext = context;
@@ -56,6 +60,11 @@ public class StreamChainImpl implements StreamChain {
   @Override
   public TerminatorStreamCall getTerminationCall() {
     return myTerminator;
+  }
+
+  @Override
+  public @Nullable ProducerStreamCall getProducerCall() {
+    return myProducer;
   }
 
   @Override

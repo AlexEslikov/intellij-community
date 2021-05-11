@@ -4,6 +4,7 @@ package com.intellij.debugger.streams.wrapper;
 import com.intellij.openapi.util.NlsSafe;
 import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -23,6 +24,9 @@ public interface StreamChain {
 
   @NotNull
   TerminatorStreamCall getTerminationCall();
+
+  @Nullable
+  ProducerStreamCall getProducerCall();
 
   @NotNull @NlsSafe String getText();
 

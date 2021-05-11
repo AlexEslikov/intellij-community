@@ -1,6 +1,7 @@
 // Copyright 2000-2017 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license that can be found in the LICENSE file.
 package com.intellij.debugger.streams.psi.impl;
 
+import com.intellij.debugger.streams.psi.ChainDetector;
 import com.intellij.debugger.streams.psi.ChainTransformer;
 import com.intellij.debugger.streams.trace.dsl.impl.java.JavaTypes;
 import com.intellij.debugger.streams.trace.impl.handler.type.GenericType;
@@ -47,7 +48,7 @@ public class JavaChainTransformerImpl implements ChainTransformer.Java {
       intermediateCalls.isEmpty() ? qualifier.getTypeAfter() : intermediateCalls.get(intermediateCalls.size() - 1).getTypeAfter();
     final TerminatorStreamCall terminationCall = createTerminationCall(typeBefore, streamExpressions.get(streamExpressions.size() - 1));
 
-    return new StreamChainImpl(qualifier, intermediateCalls, terminationCall, context);
+    return new StreamChainImpl(qualifier, null, intermediateCalls, terminationCall, context);
   }
 
   @NotNull
