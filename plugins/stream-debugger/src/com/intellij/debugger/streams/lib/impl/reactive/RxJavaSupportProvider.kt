@@ -34,4 +34,6 @@ internal class RxJavaSupportProvider : LibrarySupportProvider {
   }
 
   override fun getLibrarySupport(): LibrarySupport = librarySupport
+
+  override fun supportRepeatableTrace(): Boolean = false
 }

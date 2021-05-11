@@ -12,7 +12,6 @@ import com.intellij.debugger.streams.trace.dsl.impl.java.ReactiveStatementFactor
 import com.intellij.debugger.streams.wrapper.StreamChainBuilder
 import com.intellij.openapi.project.Project
 
-
 /**
  * @author Aleksandr Eslikov
  */
@@ -35,4 +34,6 @@ internal class ReactorSupportProvider : LibrarySupportProvider {
   }
 
   override fun getLibrarySupport(): LibrarySupport = librarySupport
+
+  override fun supportRepeatableTrace(): Boolean = false
 }

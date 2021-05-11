@@ -28,4 +28,6 @@ internal class StreamExLibrarySupportProvider : LibrarySupportProvider {
 
   override fun getChainBuilder(): StreamChainBuilder =
     JavaStreamChainBuilder(JavaChainTransformerImpl(), PackageChainDetector.forJavaStreams("one.util.streamex"))
+
+  override fun supportRepeatableTrace(): Boolean = true
 }

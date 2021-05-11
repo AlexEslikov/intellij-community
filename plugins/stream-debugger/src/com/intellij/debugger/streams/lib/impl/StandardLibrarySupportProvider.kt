@@ -33,4 +33,6 @@ internal class StandardLibrarySupportProvider : LibrarySupportProvider {
   override fun getChainBuilder(): StreamChainBuilder = builder
 
   override fun getLibrarySupport(): LibrarySupport = support
+
+  override fun supportRepeatableTrace(): Boolean = true
 }

@@ -44,6 +44,8 @@ internal class JBIterableSupportProvider : LibrarySupportProvider {
 
   override fun getLibrarySupport(): LibrarySupport = librarySupport
 
+  override fun supportRepeatableTrace(): Boolean = true
+
   private class JBIterableJavaStatementFactory : JavaStatementFactory() {
     override fun createPeekCall(elementsType: GenericType, lambda: Lambda): IntermediateStreamCall {
       val lambdaBody = createEmptyLambdaBody(lambda.variableName).apply {
