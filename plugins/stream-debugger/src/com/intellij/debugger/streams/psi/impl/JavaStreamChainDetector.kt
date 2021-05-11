@@ -14,4 +14,7 @@ class JavaStreamChainDetector : ChainDetector {
 
   override fun isIntermediateCall(callExpression: PsiMethodCallExpression): Boolean =
     StreamApiUtil.isIntermediateStreamCall(callExpression)
+
+  override fun isProducerStreamCall(callExpression: PsiMethodCallExpression): Boolean =
+    StreamApiUtil.isProducerStreamCall(callExpression)
 }

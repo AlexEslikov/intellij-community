@@ -16,12 +16,22 @@ class InheritanceBasedChainDetector(private val baseClassName: String) : ChainDe
   override fun isTerminationCall(callExpression: PsiMethodCallExpression): Boolean {
     val method = callExpression.resolveMethod() ?: return false
     val qualifierType = callExpression.methodExpression.qualifierExpression?.type
-    return (isStreamType(qualifierType) || isStreamType(method.parent as? PsiClass)) && !isStreamType(method.returnType)
+    return (isStreamType(qualifierType) || isStreamType(method.parent as? PsiClass))
+           && !isStreamType(method.returnType)
   }
 
   override fun isIntermediateCall(callExpression: PsiMethodCallExpression): Boolean {
     val method = callExpression.resolveMethod() ?: return false
-    return !method.isStatic() && isStreamType(method.parent as? PsiClass) && isStreamType(callExpression.resolveMethod()?.returnType)
+    return !method.isStatic()
+           && isStreamType(method.parent as? PsiClass)
+           && isStreamType(method.returnType)
+  }
+
+  override fun isProducerStreamCall(callExpression: PsiMethodCallExpression): Boolean {
+    val method = callExpression.resolveMethod() ?: return false
+    return method.isStatic()
+           && isStreamType(method.returnType)
+           && isStreamType(method.parent as? PsiClass)
   }
 
   private fun isStreamType(type: PsiType?): Boolean = InheritanceUtil.isInheritor(type, baseClassName)

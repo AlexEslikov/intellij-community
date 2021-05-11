@@ -9,6 +9,7 @@ import com.intellij.psi.PsiMethodCallExpression
 interface ChainDetector {
   fun isTerminationCall(callExpression: PsiMethodCallExpression): Boolean
   fun isIntermediateCall(callExpression: PsiMethodCallExpression): Boolean
+  fun isProducerStreamCall(callExpression: PsiMethodCallExpression): Boolean
   fun isStreamCall(callExpression: PsiMethodCallExpression): Boolean =
     isIntermediateCall(callExpression) || isTerminationCall(callExpression)
 }
